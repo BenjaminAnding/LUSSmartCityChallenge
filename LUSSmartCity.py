@@ -2,11 +2,12 @@ import urllib
 import glob
 import os
 import cv2
-import time
 import numpy as np
 from PIL import Image, ImageFilter
 from datetime import datetime
 
+
+colorOrange = (30, 90, 255)
 baseURL = 'http://www.lafayettela.gov/tcams/getTCamera.aspx?ptzid='
 AmbCongURL = '151'
 AmbCurrURL = '210'
@@ -26,9 +27,6 @@ intersections = {'AmbCong':'Ambassador @ Congress', 'AmbCurr':'Ambassador @ Curr
 badImage = Image.open("JUNK.jpg")
 badImage_sharp = badImage.filter( ImageFilter.SHARPEN )
 r,g,b = badImage_sharp.split()
-print(r)
-print(g)
-print(b)
 
 
 for key in intersections:
@@ -73,8 +71,12 @@ for key in intersections:
 					gray = np.float32(gray)
 					dst = cv2.cornerHarris(gray,2,3,0.04)
 					dst = cv2.dilate(dst,None)
-					img[dst>0.01*dst.max()]=[0,0,255]
-					cv2.imshow('dst',img)
+					img[dst>0.01*dst.max()]=[30,90,255]
+					pilImage = Image.fromarray(img)
+					pixels = pilImage.height * pilImage.width
+					np_pixdata = np.array(pilImage)
+					np_counter = np.count_nonzero(np_pixdata[(np_pixdata == colorOrange)])
+					print(str(np_counter)+" corners")
+					cv2.imshow('Traffic',img)
 				if cv2.waitKey(100) & 0xff == 27: 
-					time.sleep(0.8)
 					cv2.destroyAllWindows()

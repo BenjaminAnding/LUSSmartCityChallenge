@@ -65,7 +65,7 @@ for key in intersections:
 					print("JANK")
 					os.remove(image)
 				else: 
-					print(image)
+					print(intersections[key]+" "+image[15:-4])
 					img = cv2.imread(image)
 					gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 					gray = np.float32(gray)
